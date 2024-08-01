@@ -19,12 +19,12 @@ public class MemberLeaveListener extends ListenerAdapter {
         String username = event.getUser().getName();
 
         assert textChannel != null;
-        logger.info("Membro saiu: " + event.getUser().getName() + " ID:" + event.getUser().getId());  // Log para depuração
-        logger.info("Guild: " + event.getGuild().getName()); // Adicionar log do nome do servidor
+        logger.info("Membro saiu: {} ID:{}", event.getUser().getName(), event.getUser().getId());  // Log para depuração
+        logger.info("Guild: {}", event.getGuild().getName()); // Adicionar log do nome do servidor
 
-        textChannel.sendMessage(username + " entrou no servidor!").queue(
-                success -> logger.info("Message sent successfully."),
-                error -> logger.error("Failed to send message.", error)
-        );
+//        textChannel.sendMessage(username + " entrou no servidor!").queue(
+//                success -> logger.info("Message sent successfully."),
+//                error -> logger.error("Failed to send message.", error)
+//        );
     }
 }

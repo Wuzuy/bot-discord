@@ -21,6 +21,7 @@ import java.util.Map;
 public class DevBot {
     public static JDA jda;
     public static Map<String, Character> prefixMap = new HashMap<>();
+    public static Map<String, String> autoroleMap = new HashMap<>();
 
     private static final Logger logger = LoggerFactory.getLogger(DevBot.class);
 

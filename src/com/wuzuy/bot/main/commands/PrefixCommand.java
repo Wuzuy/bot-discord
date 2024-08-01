@@ -30,7 +30,7 @@ public class PrefixCommand extends ListenerAdapter {
             }
             DevBot.prefixMap.replace(event.getGuild().getId(), args[1].charAt(0));
             try {
-                CRUD.update(event.getGuild().getId(), args[1].charAt(0));
+                CRUD.update("prefix", event.getGuild().getId(), String.valueOf(args[1]));
                 textChannel.sendMessage("O prefixo foi alterado para: " + args[1].charAt(0)).queue();
             } catch (SQLException e) {
                 e.printStackTrace();
