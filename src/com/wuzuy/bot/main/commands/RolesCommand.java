@@ -30,7 +30,7 @@ public class RolesCommand extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         TextChannel textChannel = (TextChannel) event.getChannel();
-        Character prefixo = DevBot.prefixMap.get(event.getGuild().getId()); // Prefixo base: $
+        String prefixo = DevBot.prefixMap.get(event.getGuild().getId()); // Prefixo base: $
         String[] args = event.getMessage().getContentRaw().split(" ");
 
         byte roleIndex = 1;
@@ -41,7 +41,7 @@ public class RolesCommand extends ListenerAdapter {
             logger.info("Comando autorole recebido.");
 
             // Verifica se o membro possui permissão de administrador
-            if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+            if (!Objects.requireNonNull(event.getMember()).hasPermission(Permission.ADMINISTRATOR)) {
                 textChannel.sendMessage(event.getMember().getAsMention() + ", você não possui a permissão necessária!").queue();
                 return;
             }
@@ -70,7 +70,7 @@ public class RolesCommand extends ListenerAdapter {
             // Verifica se a edição de autorole está ativa e o membro é o correto
             if (isEditingAutoRole.get(gId) == null ||
                     !isEditingAutoRole.get(gId) ||
-                    !event.getMember().equals(memberEditingAutoRoleMap.get(gId)) ||
+                    !Objects.requireNonNull(event.getMember()).equals(memberEditingAutoRoleMap.get(gId)) ||
                     event.getGuild().getJDA().getSelfUser().getId().equals(event.getMember().getId()) ||
                     guildRolesMapMap.get(event.getGuild().getId()) == null)
                 return;

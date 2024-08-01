@@ -16,7 +16,7 @@ public class PrefixCommand extends ListenerAdapter {
 
         String [] args = event.getMessage().getContentRaw().split(" ");
         TextChannel textChannel = (TextChannel) event.getChannel();
-        Character prefixo = DevBot.prefixMap.get(event.getGuild().getId()); // Prefixo base: $
+        String prefixo = DevBot.prefixMap.get(event.getGuild().getId()); // Prefixo base: $
 
         if (args[0].equalsIgnoreCase( prefixo + "prefix")) { // Comando $prefix
             textChannel.sendMessage("O prefixo para este servidor é:" + prefixo).queue();
@@ -28,10 +28,10 @@ public class PrefixCommand extends ListenerAdapter {
                 textChannel.sendMessage(event.getMember().getAsMention() + " você não tem permissão para usar esse comando!").queue();
                 return;
             }
-            DevBot.prefixMap.replace(event.getGuild().getId(), args[1].charAt(0));
+            DevBot.prefixMap.replace(event.getGuild().getId(), args[1]);
             try {
-                CRUD.update("prefix", event.getGuild().getId(), String.valueOf(args[1]));
-                textChannel.sendMessage("O prefixo foi alterado para: " + args[1].charAt(0)).queue();
+                CRUD.update("prefix", args[1], event.getGuild().getId());
+                textChannel.sendMessage("O prefixo foi alterado para: " + DevBot.prefixMap.get(event.getGuild().getId())).queue();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

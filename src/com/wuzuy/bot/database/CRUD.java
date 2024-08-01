@@ -65,7 +65,7 @@ public class CRUD {
 
             result = stmt.executeQuery();
             while (result.next()) {
-                DevBot.prefixMap.put(guildId, result.getString("prefix").charAt(0));
+                DevBot.prefixMap.put(guildId, result.getString("prefix"));
                 DevBot.autoroleMap.put(guildId, result.getString("autorole"));
             }
         } finally {
