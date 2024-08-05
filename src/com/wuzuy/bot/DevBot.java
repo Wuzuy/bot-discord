@@ -5,10 +5,12 @@ import com.wuzuy.bot.database.Config;
 import com.wuzuy.bot.main.commands.PingCommand;
 import com.wuzuy.bot.main.commands.PrefixCommand;
 import com.wuzuy.bot.main.commands.RolesCommand;
+import com.wuzuy.bot.main.listeners.GuildJoinListener;
 import com.wuzuy.bot.main.listeners.MemberJoinListener;
 import com.wuzuy.bot.main.listeners.MemberLeaveListener;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.internal.utils.JDALogger;
@@ -17,6 +19,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static net.dv8tion.jda.api.entities.Activity.playing;
 
 public class DevBot {
     public static JDA jda;
@@ -29,8 +33,6 @@ public class DevBot {
         logger.info("Inicializando o bot...");
         JDALogger.setFallbackLoggerEnabled(false);
 
-        // Defina o token diretamente aqui para fins de desenvolvimento
-        // Lembre-se de remover ou substituir isso por uma solução mais segura antes de mover para produção
         String token = System.getenv("BOT_TOKEN");
 
         if (token == null || token.isEmpty()) {
@@ -46,13 +48,16 @@ public class DevBot {
         logger.info("Bot inicializado com sucesso!");
 
         // Commands
-        jda.addEventListener(new PingCommand());
-        jda.addEventListener(new PrefixCommand());
-        jda.addEventListener(new RolesCommand());
+        jda.addEventListener(new PingCommand(),
+                new PrefixCommand(),
+                new RolesCommand()
+        );
 
         // Listeners
-        jda.addEventListener(new MemberJoinListener());
-        jda.addEventListener(new MemberLeaveListener());
+        jda.addEventListener(new MemberJoinListener(),
+                new MemberLeaveListener(),
+                new GuildJoinListener()
+        );
 
         // After ready:
         jda.awaitReady();
@@ -65,7 +70,10 @@ public class DevBot {
         for (Guild guild : jda.getGuilds()) {
             CRUD.select(guild.getId());
         }
-
-//            System.out.println(mapGuildName.get(guild.getIdLong()));
+        setActivity(jda);
+    }
+    public static void setActivity(JDA jda) throws InterruptedException {
+        jda.getPresence().setPresence(OnlineStatus.IDLE,
+                playing("em " + jda.awaitReady().getGuilds().size() + " servidores!"));
     }
 }

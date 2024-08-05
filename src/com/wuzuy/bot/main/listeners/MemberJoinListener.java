@@ -1,5 +1,6 @@
 package com.wuzuy.bot.main.listeners;
 
+import com.wuzuy.bot.DevBot;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.UserSnowflake;
@@ -24,7 +25,9 @@ public class MemberJoinListener extends ListenerAdapter {
         Guild guild = event.getGuild();
 
         // Adicionar cargo ao entrar
-        guild.addRoleToMember(UserSnowflake.fromId(joined.getId()), Objects.requireNonNull(guild.getRoleById(1167132871505481742L))).queue();
+        guild.addRoleToMember(UserSnowflake.fromId(joined.getId()),
+                Objects.requireNonNull(guild.getRoleById(DevBot.autoroleMap.get(event.getGuild().getId())))).queue();
+
         logger.info("Novo membro entrou: {} ID:{}", event.getUser().getName(), event.getUser().getId());  // Log para depuração
         logger.info("Guild: {}", event.getGuild().getName()); // Adicionar log do nome do servidor
 

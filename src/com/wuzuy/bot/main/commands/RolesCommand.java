@@ -38,7 +38,6 @@ public class RolesCommand extends ListenerAdapter {
 
         // Verifica se o comando recebido é o comando de autorole
         if (args[0].equalsIgnoreCase(prefixo + "autorole")) {
-            logger.info("Comando autorole recebido.");
 
             // Verifica se o membro possui permissão de administrador
             if (!Objects.requireNonNull(event.getMember()).hasPermission(Permission.ADMINISTRATOR)) {
@@ -65,14 +64,14 @@ public class RolesCommand extends ListenerAdapter {
             event.getChannel().sendMessage(stringBuilder.toString()).queue();
 
         } else if (args[0].matches("^[0-9]{1,23}$")) { // Verifica se o argumento é um número de 1 a 23
-            logger.info("Número de cargo recebido: " + args[0]);
 
             // Verifica se a edição de autorole está ativa e o membro é o correto
             if (isEditingAutoRole.get(gId) == null ||
                     !isEditingAutoRole.get(gId) ||
                     !Objects.requireNonNull(event.getMember()).equals(memberEditingAutoRoleMap.get(gId)) ||
                     event.getGuild().getJDA().getSelfUser().getId().equals(event.getMember().getId()) ||
-                    guildRolesMapMap.get(event.getGuild().getId()) == null)
+                    guildRolesMapMap.get(event.getGuild().getId()) == null ||
+                    args.length != 1 || Byte.parseByte(args[0]) >= guildRolesMapMap.size())
                 return;
 
             byte selectedRoleIndex = Byte.parseByte(args[0]);
@@ -96,7 +95,7 @@ public class RolesCommand extends ListenerAdapter {
             // Tenta atualizar o banco de dados com o cargo selecionado
             try {
                 CRUD.update("autorole", roleId, gId);
-                logger.info("Comando autorole atualizado no banco de dados.");
+                DevBot.autoroleMap.put(gId, roleId);
             } catch (SQLException e) {
                 textChannel.sendMessage("Erro ao salvar no banco de dados: " + e.getMessage()).queue();
                 logger.severe("Erro ao salvar no banco de dados: " + e.getMessage());
